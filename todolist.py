@@ -15,24 +15,41 @@ class Menu_Bar:
 		# create menu bar
 		self.my_menu = Menu(root)
 		root.config(menu=self.my_menu)
+
 		# labeling menu bar
 		self.file_menu = Menu(self.my_menu, tearoff=0)
 		self.my_menu.add_cascade(label='File', menu=self.file_menu)
+
 		# add item in menu bar
 		self.file_menu.add_command(label='Save List', command=self.save_list)
+		self.file_menu.add_command(label='Open List', command=self.open_list)
 		self.file_menu.add_separator()
 		self.file_menu.add_command(label='Exit', command=lambda:root.quit())
 
 	def save_list(self):
 		# gather item in listbox
 		stuff = box.listbox.get(0, END)
+
 		# define path to save file
 		filetype = [('Text', '*.txt')]
 		savefile_path = filedialog.asksaveasfilename(title='Save File',filetype=filetype, defaultextension=filetype)
+
 		#save file
-		with open(savefile_path, 'w') as f:
+		with open(savefile_path, 'r', newline='') as f:
 			for line in stuff:
 				f.write(line + '\n')
+
+	def open_list(self):
+		filetype = [('Text', '*.txt')]
+		openfile_path = filedialog.askopenfilename(title='Open File', filetype=filetype, defaultextension=filetype)
+
+		# delete the old item in listbox first when user click to open file
+		if openfile_path:
+			box.listbox.delete(0, END)
+			with open(openfile_path, 'r') as f:
+				for line in f:
+					box.listbox.insert(END, line)
+		
 
 class Box:
 	def __init__(self):
@@ -43,7 +60,7 @@ class Box:
 		self.listbox.pack(side=LEFT, fill=BOTH)
 
 	def list_stuff(self):
-		stuff = ['Study MATH', 'Python Fundamental', 'Python Project', 'Swimming', '1', '2', '3', '4', '5']
+		stuff = ['This', 'is', 'a', 'dummy', 'list']
 		# stuff = []
 		for i in stuff:
 			self.listbox.insert(END, i)
